@@ -2,7 +2,7 @@ steps:
 
 - id: 'Running the Unit Tests'
   name: 'gcr.io/cloud-builders/go:alpine'
-  args: [ 'go', 'test', '-v', './src/...']
+  args: [ 'test', '-v', './src/...']
 
 - id: 'Pulling the base image before building it (issue with "FROM --platform")
        https://github.com/moby/buildkit/issues/1271'
