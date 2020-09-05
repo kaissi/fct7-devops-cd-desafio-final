@@ -40,9 +40,9 @@ steps:
   args: [ 'push', 'gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}' ]
 
 - id: 'Adjusting the Deployment File for K8s'
-  name: 'busybox'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: '/bin/sh'
   args:
-    - '/bin/sh'
     - '-c'
     - |
       sed -i #img-app-deployment#gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}#g .k8s/deployment.yaml
