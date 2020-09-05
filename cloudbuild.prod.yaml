@@ -1,0 +1,54 @@
+steps:
+
+- id: 'Running the Unit Tests'
+  name: 'gcr.io/cloud-builders/go:alpine'
+  args: [ 'go', 'test', '-v', './src/...']
+
+- id: 'Pulling the base image before building it (issue with "FROM --platform")
+       https://github.com/moby/buildkit/issues/1271'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [ 'pull', 'golang:1.14.4-alpine3.12' ]
+
+- id: 'Building Docker Image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: 
+    - 'build'
+    - '--tag=gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}'
+    - '--file=.docker/Dockerfile'
+    - '.'
+  env:
+    - 'DOCKER_CLI_EXPERIMENTAL=enabled'
+    - 'DOCKER_BUILDKIT=1'
+
+- id: 'Running Container for Test'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'run'
+    - '--rm'
+    - '--detach'
+    - '--name=cd-desafio-final'
+    - '--network=cloudbuild'
+    - '--publish=8080:8080'
+    - 'gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}'
+
+- id: 'Testing the Container'
+  name: 'busybox'
+  args: [ 'wget', '-qO-', 'http://cd-desafio-final:8080/soma?x=3&y=-3' ]
+
+- id: 'Pushing Docker Image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [ 'push', 'gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}' ]
+
+- id: 'Adjusting the Deployment File for K8s'
+  name: 'busybox'
+  args:
+    - |
+      sed -i #img-app-deployment#gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}#g .k8s/deployment.yaml
+      cat .k8s/deployment.yaml
+
+- id: 'Deploying to K8s'
+  name: 'gcr.io/cloud-builders/kubectl'
+  args: [ 'apply', '-f', '.k8s/' ]
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-cd-desafio-final'

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ci-desafio-final-service
+spec:
+  selector:
+    app: ci-desafio-final
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ci-desafio-final
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ci-desafio-final
+  template:
+    metadata:
+      labels:
+        app: ci-desafio-final
+    spec:
+      containers:
+      - name: ci-desafio-final
+        image: img-app-deployment
+        resources:
+          requests:
+            memory: "8Mi"
+            cpu: "50m"
+          limits:
+            memory: "16Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 8080
