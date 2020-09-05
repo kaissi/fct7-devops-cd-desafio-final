@@ -42,6 +42,8 @@ steps:
 - id: 'Adjusting the Deployment File for K8s'
   name: 'busybox'
   args:
+    - '/bin/sh'
+    - '-c'
     - |
       sed -i #img-app-deployment#gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}#g .k8s/deployment.yaml
       cat .k8s/deployment.yaml
