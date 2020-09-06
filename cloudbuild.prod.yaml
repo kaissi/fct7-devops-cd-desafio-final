@@ -47,8 +47,7 @@ steps:
     - |
       #sed -i s#img-app-deployment#gcr.io/${PROJECT_ID}/devops-cd-desafio-final:${SHORT_SHA}#g .k8s/deployment.yaml
       cat .k8s/deployment.yaml
-      GREP_RESULT=$(cat .k8s/deployment.yaml | grep img-app-deployment)
-      if [ ! -z "${GREP_RESULT}" ]; then
+      if grep -q 'img-app-deployment' .k8s/deployment.yaml; then
         echo "Arquivo não possui a imagem da aplicação"
         exit 1
       fi
