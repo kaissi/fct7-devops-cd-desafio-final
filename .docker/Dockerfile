@@ -6,11 +6,11 @@ ENV CGO_ENABLED=0 \
     GOARCH=${TARGETARCH}
 ADD ./src /go/src
 WORKDIR /go/src/github.com/kaissi/fct7-devops-cd-desafio-final
-RUN go build -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/desafio-final-ci \
+RUN go build -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/desafio-final-cd \
     && apk add --no-cache upx \
-    && upx --brute /go/bin/desafio-final-ci
+    && upx --brute /go/bin/desafio-final-cd
 
 FROM --platform=${TARGETPLATFORM} scratch
-COPY --from=build /go/bin/desafio-final-ci /usr/local/bin/
+COPY --from=build /go/bin/desafio-final-cd /usr/local/bin/
 EXPOSE 8080
-ENTRYPOINT [ "desafio-final-ci" ]
+ENTRYPOINT [ "desafio-final-cd" ]
