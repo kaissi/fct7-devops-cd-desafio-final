@@ -7,7 +7,7 @@ export DOCKER_BUILDKIT=1
 
 export DOCKER_IMAGE=kaissi/devops-cd-desafio-final
 export DOCKER_TAG=latest
-export DOCKER_NAME=ci-desafio-final
+export DOCKER_NAME=cd-desafio-final
 export DOCKER_PORT=8080
 
 export ARCHS_ALL=amd64 arm64 armv7 armhf

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ci-desafio-final-service
+  name: cd-desafio-final-service
 spec:
   selector:
-    app: ci-desafio-final
+    app: cd-desafio-final
   type: LoadBalancer
   ports:
   - port: 80
@@ -13,19 +13,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ci-desafio-final
+  name: cd-desafio-final
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ci-desafio-final
+      app: cd-desafio-final
   template:
     metadata:
       labels:
-        app: ci-desafio-final
+        app: cd-desafio-final
     spec:
       containers:
-      - name: ci-desafio-final
+      - name: cd-desafio-final
         image: img-app-deployment
         resources:
           requests:
